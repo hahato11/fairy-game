@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦋 梦幻精灵换装小游戏 🌹</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(255, 182, 193, 0.3) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(152, 251, 152, 0.3) 0%, transparent 40%),
+                linear-gradient(135deg, #FFE5F0 0%, #E8F5E9 50%, #D4F1DD 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 飘动的蝴蝶装饰 */
+        .butterfly {
+            position: fixed;
+            font-size: 35px;
+            animation: butterfly-fly 15s ease-in-out infinite;
+            pointer-events: none;
+            opacity: 0.7;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        @keyframes butterfly-fly {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0.4;
+            }
+            25% {
+                transform: translate(100px, -80px) rotate(10deg);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(200px, -40px) rotate(-10deg);
+                opacity: 0.6;
+            }
+            75% {
+                transform: translate(100px, -100px) rotate(15deg);
+                opacity: 0.9;
+            }
+        }
+
+        .butterfly:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+        .butterfly:nth-child(2) { top: 25%; right: 15%; animation-delay: 3s; }
+        .butterfly:nth-child(3) { bottom: 20%; left: 8%; animation-delay: 6s; }
+        .butterfly:nth-child(4) { top: 60%; right: 12%; animation-delay: 9s; }
+        .butterfly:nth-child(5) { bottom: 35%; left: 20%; animation-delay: 12s; }
+
+        /* 玫瑰装饰 */
+        .rose-deco {
+            position: fixed;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .rose-deco.top-left {
+            top: 20px;
+            left: 20px;
+            width: 120px;
+            height: 120px;
+        }
+
+        .rose-deco.bottom-right {
+            bottom: 20px;
+            right: 20px;
+            width: 150px;
+            height: 150px;
+            transform: rotate(180deg);
+        }
+
+        /* 主容器 */
+        .game-container {
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.95) 0%,
+                rgba(248, 255, 248, 0.95) 100%);
+            border-radius: 35px;
+            box-shadow:
+                0 30px 80px rgba(152, 251, 152, 0.3),
+                0 20px 60px rgba(255, 182, 193, 0.2);
+            width: 100%;
+            max-width: 1400px;
+            overflow: hidden;
+            border: 5px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(135deg, #FFB6D9 0%, #98FB98 50%, #B9E9C5 100%);
+            border-radius: 35px;
+            z-index: -1;
+        }
+
+        /* 顶部标题栏 */
+        .header {
+            background: linear-gradient(135deg,
+                #FFD6E8 0%,
+                #C8F5D0 50%,
+                #B9E9C5 100%);
+            padding: 35px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 苔藓纹理效果 */
+        .header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(144, 238, 144, 0.15) 2px, transparent 2px),
+                radial-gradient(circle at 60% 70%, rgba(152, 251, 152, 0.1) 3px, transparent 3px),
+                radial-gradient(circle at 40% 50%, rgba(143, 188, 143, 0.12) 2px, transparent 2px);
+            background-size: 40px 40px, 60px 60px, 50px 50px;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            background: linear-gradient(135deg, #FF69B4 0%, #32CD32 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 8px rgba(152, 251, 152, 0.3);
+            letter-spacing: 5px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            background: linear-gradient(90deg, #FF69B4 0%, #32CD32 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            display: flex;
+            min-height: 700px;
+        }
+
+        /* 左侧人物展示区 */
+        .character-stage {
+            width: 800px;
+            background:
+                radial-gradient(circle at 30% 40%, rgba(255, 240, 245, 0.6) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(240, 255, 240, 0.6) 0%, transparent 50%),
+                linear-gradient(180deg, #FFF5FA 0%, #F0FFF0 100%);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-right: 5px solid transparent;
+            background-clip: padding-box;
+        }
+
+        /* 苔藓纹理背景 */
+        .character-stage::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 25% 25%, rgba(143, 188, 143, 0.08) 3px, transparent 3px),
+                radial-gradient(circle at 75% 75%, rgba(152, 251, 152, 0.06) 4px, transparent 4px),
+                radial-gradient(circle at 50% 50%, rgba(144, 238, 144, 0.07) 2px, transparent 2px);
+            background-size: 80px 80px, 100px 100px, 60px 60px;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* 玫瑰装饰框 */
+        .stage-rose {
+            position: absolute;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        .stage-rose.top {
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 50px;
+        }
+
+        .stage-rose.left {
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 50px;
+        }
+
+        .stage-rose.right {
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 50px;
+        }
+
+        .stage-rose.bottom {
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 50px;
+        }
+
+        /* 人物图层容器 */
+        .character-layers {
+            position: relative;
+            width: 600px;
+            height: 650px;
+        }
+
+        /* 所有图层的基础样式 */
+        .layer {
+            position: absolute;
+            left: 50%;
+            transition: opacity 0.5s ease;
+            object-fit: contain;
+        }
+
+        .layer.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* 图层Z-index */
+        .base-layer {
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hair-layer {
+            z-index: 10;
+            height: auto;
+            transform: translate(-50%, 0);
+        }
+
+        .dress-layer {
+            z-index: 5;
+            height: auto;
+            transform: translate(-50%, 0);
+        }
+
+        /* 发型样式 */
+        #hair1 {
+            width: 21.5%;
+            top: -5.5%;
+            left: 49%;
+        }
+
+        #hair2 {
+            width: 24.5%;
+            top: -10.5%;
+            left: 48%;
+        }
+
+        #hair3 {
+            width: 19%;
+            top: -2.5%;
+            left: 50%;
+        }
+
+        #hair4 {
+            width: 17.5%;
+            top: -5%;
+            left: 50%;
+        }
+
+        #hair5 {
+            width: 21.5%;
+            top: -4.5%;
+            left: 50.5%;
+        }
+
+        /* 裙子样式 */
+        #dress1 {
+            width: 59%;
+            top: 2.5%;
+            left: 47.5%;
+        }
+
+        #dress2 {
+            width: 41.5%;
+            top: 8%;
+            left: 49.5%;
+        }
+
+        #dress3 {
+            width: 41.5%;
+            top: 8%;
+            left: 49.5%;
+        }
+
+        #dress4 {
+            width: 41.5%;
+            top: 8%;
+            left: 50%;
+        }
+
+        #dress5 {
+            width: 54%;
+            top: 18.5%;
+            left: 49.5%;
+        }
+
+        #dress6 {
+            width: 98.5%;
+            top: 4.5%;
+            left: 50%;
+        }
+
+        /* 右侧控制面板 */
+        .controls-panel {
+            flex: 1;
+            background: linear-gradient(180deg,
+                rgba(255, 251, 252, 0.98) 0%,
+                rgba(245, 255, 250, 0.98) 100%);
+            overflow-y: auto;
+            padding: 40px 35px;
+        }
+
+        /* 分类卡片 */
+        .category {
+            margin-bottom: 30px;
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.9) 0%,
+                rgba(248, 255, 248, 0.9) 100%);
+            border-radius: 22px;
+            padding: 28px;
+            box-shadow:
+                0 8px 28px rgba(152, 251, 152, 0.15),
+                0 4px 15px rgba(255, 182, 193, 0.1);
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .category::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(135deg, #FFD6E8 0%, #C8F5D0 100%);
+            border-radius: 22px;
+            z-index: -1;
+        }
+
+        .category:hover {
+            box-shadow:
+                0 12px 38px rgba(152, 251, 152, 0.25),
+                0 6px 20px rgba(255, 182, 193, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .category h3 {
+            font-size: 1.5em;
+            background: linear-gradient(90deg, #FF69B4 0%, #32CD32 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 3px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .category h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #FFB6D9, #98FB98, transparent);
+        }
+
+        /* 选项网格 */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        /* 单个选项按钮 */
+        .option-item {
+            aspect-ratio: 1;
+            border: 3px solid transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8FFF8 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                0 4px 15px rgba(152, 251, 152, 0.12),
+                0 2px 8px rgba(255, 182, 193, 0.08);
+        }
+
+        .option-item::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(135deg, #FFE5F0 0%, #E8F5E9 100%);
+            border-radius: 20px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .option-item:hover::before {
+            opacity: 1;
+        }
+
+        .option-item:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow:
+                0 10px 30px rgba(152, 251, 152, 0.25),
+                0 5px 15px rgba(255, 182, 193, 0.15);
+        }
+
+        .option-item.active {
+            background: linear-gradient(135deg, #FFE5F0 0%, #E8F5E9 100%);
+            border-color: transparent;
+            box-shadow:
+                0 8px 25px rgba(152, 251, 152, 0.3),
+                0 4px 12px rgba(255, 105, 180, 0.3),
+                inset 0 2px 10px rgba(255, 182, 193, 0.15);
+        }
+
+        .option-item.active::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            font-size: 22px;
+            background: linear-gradient(135deg, #FF69B4 0%, #32CD32 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        .option-name {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            letter-spacing: 2px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #D4669D 0%, #2E8B57 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 清空按钮 */
+        .clear-btn {
+            background: linear-gradient(135deg, #FF6B9D 0%, #EE5A8F 100%);
+            box-shadow: 0 5px 18px rgba(255, 107, 157, 0.3);
+        }
+
+        .clear-btn .option-name {
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .clear-btn:hover {
+            background: linear-gradient(135deg, #EE5A8F 0%, #D44876 100%);
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+        }
+
+        /* 底部功能按钮区 */
+        .bottom-actions {
+            background: linear-gradient(135deg,
+                rgba(255, 240, 245, 0.95) 0%,
+                rgba(240, 255, 240, 0.95) 100%);
+            padding: 35px 45px;
+            border-top: 5px solid transparent;
+            background-clip: padding-box;
+            display: flex;
+            gap: 22px;
+            position: relative;
+        }
+
+        .bottom-actions::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #FFB6D9 0%, #98FB98 100%);
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 22px;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.25em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow:
+                0 10px 30px rgba(152, 251, 152, 0.2),
+                0 5px 15px rgba(255, 182, 193, 0.15);
+            letter-spacing: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .action-btn:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .action-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-btn.random {
+            background: linear-gradient(135deg, #FF69B4 0%, #32CD32 100%);
+            color: white;
+        }
+
+        .action-btn.random:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow:
+                0 15px 45px rgba(152, 251, 152, 0.35),
+                0 8px 25px rgba(255, 105, 180, 0.3);
+        }
+
+        .action-btn.reset {
+            background: linear-gradient(135deg, #98FB98 0%, #FFB6D9 100%);
+            color: white;
+        }
+
+        .action-btn.reset:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow:
+                0 15px 45px rgba(255, 182, 193, 0.35),
+                0 8px 25px rgba(152, 251, 152, 0.3);
+        }
+
+        /* 滚动条样式 */
+        .controls-panel::-webkit-scrollbar {
+            width: 14px;
+        }
+
+        .controls-panel::-webkit-scrollbar-track {
+            background: linear-gradient(180deg, rgba(255, 182, 193, 0.1) 0%, rgba(152, 251, 152, 0.1) 100%);
+            border-radius: 7px;
+        }
+
+        .controls-panel::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #FFB6D9 0%, #98FB98 100%);
+            border-radius: 7px;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .controls-panel::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #FF69B4 0%, #32CD32 100%);
+        }
+
+        /* =============== 启动界面 =============== */
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(255, 182, 193, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(152, 251, 152, 0.4) 0%, transparent 50%),
+                linear-gradient(135deg, #FFE5F0 0%, #E8F5E9 50%, #D4F1DD 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            transition: opacity 0.8s, transform 0.8s;
+        }
+
+        .start-screen.hidden {
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none;
+        }
+
+        .start-logo {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .start-logo h1 {
+            font-size: 4em;
+            background: linear-gradient(135deg, #FF69B4 0%, #32CD32 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: 8px;
+            font-weight: 600;
+        }
+
+        .start-logo p {
+            font-size: 1.8em;
+            color: #FF69B4;
+            letter-spacing: 6px;
+            opacity: 0.9;
+        }
+
+        .start-btn {
+            padding: 25px 80px;
+            font-size: 1.8em;
+            font-weight: 600;
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #FF69B4 0%, #32CD32 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 15px 50px rgba(152, 251, 152, 0.4);
+            transition: all 0.4s;
+            letter-spacing: 6px;
+            position: relative;
+            overflow: hidden;
+            animation: pulse-shadow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-shadow {
+            0%, 100% {
+                box-shadow: 0 15px 50px rgba(152, 251, 152, 0.4);
+            }
+            50% {
+                box-shadow: 0 20px 60px rgba(255, 105, 180, 0.6);
+            }
+        }
+
+        .start-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 25px 70px rgba(152, 251, 152, 0.6);
+        }
+
+        .start-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* =============== 游戏容器显示控制 =============== */
+        .game-container {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.8s 0.3s, transform 0.8s 0.3s;
+        }
+
+        .game-container.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* =============== 魔法光圈 =============== */
+        .magic-circle {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border: 3px solid;
+            border-color: rgba(255, 105, 180, 0.6) transparent rgba(152, 251, 152, 0.6) transparent;
+            border-radius: 50%;
+            animation: magic-rotate 4s linear infinite;
+            pointer-events: none;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        @keyframes magic-rotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .magic-circle:nth-child(2) {
+            width: 350px;
+            height: 350px;
+            animation-duration: 6s;
+            animation-direction: reverse;
+            border-color: transparent rgba(255, 215, 0, 0.5) transparent rgba(255, 105, 180, 0.5);
+        }
+
+        /* =============== 飘落花瓣 =============== */
+        .petal {
+            position: fixed;
+            width: 15px;
+            height: 15px;
+            background: radial-gradient(circle, #FFB6D9 0%, #FF69B4 100%);
+            border-radius: 50% 0 50% 0;
+            opacity: 0.7;
+            pointer-events: none;
+            animation: petal-fall linear infinite;
+            z-index: 999;
+        }
+
+        @keyframes petal-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0.7;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* =============== 星星闪烁 =============== */
+        .star {
+            position: fixed;
+            font-size: 20px;
+            opacity: 0;
+            pointer-events: none;
+            animation: twinkle 3s ease-in-out infinite;
+            z-index: 998;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* =============== 点击粒子效果 =============== */
+        .particle {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            animation: particle-burst 0.8s ease-out forwards;
+        }
+
+        @keyframes particle-burst {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* =============== 搭配评分面板 =============== */
+        .rating-panel {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 255, 248, 0.95) 100%);
+            padding: 15px 30px;
+            border-radius: 25px;
+            box-shadow: 0 8px 25px rgba(152, 251, 152, 0.3);
+            z-index: 100;
+            display: none;
+            min-width: 300px;
+            text-align: center;
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .rating-panel::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(135deg, #FFB6D9 0%, #98FB98 100%);
+            border-radius: 25px;
+            z-index: -1;
+        }
+
+        .rating-panel.show {
+            display: block;
+        }
+
+        .rating-score {
+            font-size: 2em;
+            font-weight: 600;
+            background: linear-gradient(135deg, #FF69B4 0%, #32CD32 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .rating-style {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+
+        .rating-tags {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .rating-tag {
+            background: linear-gradient(135deg, #FFE5F0 0%, #E8F5E9 100%);
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            color: #666;
+            letter-spacing: 1px;
+        }
+
+        /* =============== 分享弹窗 =============== */
+        .share-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .share-modal.show {
+            display: flex;
+        }
+
+        .share-content {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8FFF8 100%);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .share-content h2 {
+            font-size: 2em;
+            background: linear-gradient(135deg, #FF69B4 0%, #32CD32 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 25px;
+        }
+
+        .share-link-box {
+            background: #F8F9FA;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            word-break: break-all;
+            font-size: 0.9em;
+            color: #666;
+            border: 2px solid #E8F5E9;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .share-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 20px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        .share-btn.copy {
+            background: linear-gradient(135deg, #FF69B4 0%, #32CD32 100%);
+        }
+
+        .share-btn.close {
+            background: linear-gradient(135deg, #98FB98 0%, #FFB6D9 100%);
+        }
+
+        .share-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* =============== Toast 提示 =============== */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.95) 0%, rgba(50, 205, 50, 0.95) 100%);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            font-weight: 600;
+            z-index: 4000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: none;
+            animation: toastIn 0.3s ease-out;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        /* =============== 保存图片按钮 =============== */
+        .action-btn.capture {
+            background: linear-gradient(135deg, #FFD700 0%, #FF69B4 100%);
+            color: white;
+        }
+
+        .action-btn.capture:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow:
+                0 15px 45px rgba(255, 215, 0, 0.35),
+                0 8px 25px rgba(255, 105, 180, 0.3);
+        }
+
+        /* 响应式 */
+        @media (max-width: 1200px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .character-stage {
+                width: 100%;
+                min-height: 600px;
+            }
+
+            .controls-panel {
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 飘动的蝴蝶 -->
+    <div class="butterfly">🦋</div>
+    <div class="butterfly">🦋</div>
+    <div class="butterfly">🦋</div>
+    <div class="butterfly">🦋</div>
+    <div class="butterfly">🦋</div>
+
+    <!-- 玫瑰装饰 -->
+    <svg class="rose-deco top-left" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="30" fill="#FFB6D9" opacity="0.3"/>
+        <circle cx="50" cy="50" r="20" fill="#FF69B4" opacity="0.3"/>
+        <circle cx="50" cy="50" r="10" fill="#FF1493" opacity="0.3"/>
+        <path d="M 30 50 Q 35 30 50 30 Q 65 30 70 50" stroke="#8B4789" stroke-width="3" fill="none" opacity="0.4"/>
+        <path d="M 50 70 L 50 95" stroke="#2E8B57" stroke-width="4" opacity="0.4"/>
+        <ellipse cx="40" cy="80" rx="8" ry="4" fill="#32CD32" opacity="0.3"/>
+        <ellipse cx="60" cy="85" rx="8" ry="4" fill="#32CD32" opacity="0.3"/>
+    </svg>
+
+    <svg class="rose-deco bottom-right" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="30" fill="#FFB6D9" opacity="0.3"/>
+        <circle cx="50" cy="50" r="20" fill="#FF69B4" opacity="0.3"/>
+        <circle cx="50" cy="50" r="10" fill="#FF1493" opacity="0.3"/>
+        <path d="M 30 50 Q 35 30 50 30 Q 65 30 70 50" stroke="#8B4789" stroke-width="3" fill="none" opacity="0.4"/>
+        <path d="M 50 70 L 50 95" stroke="#2E8B57" stroke-width="4" opacity="0.4"/>
+        <ellipse cx="40" cy="80" rx="8" ry="4" fill="#32CD32" opacity="0.3"/>
+        <ellipse cx="60" cy="85" rx="8" ry="4" fill="#32CD32" opacity="0.3"/>
+    </svg>
+
+    <div class="game-container">
+        <!-- 顶部标题 -->
+        <div class="header">
+            <h1>🌹 梦幻精灵换装小游戏 🦋</h1>
+            <div class="subtitle">🍃 魔法森林 · 玫瑰庭院 🍃</div>
+        </div>
+
+        <!-- 主内容 -->
+        <div class="main-content">
+            <!-- 左侧：人物展示区 -->
+            <div class="character-stage" id="captureArea">
+                <!-- 魔法光圈 -->
+                <div class="magic-circle"></div>
+                <div class="magic-circle"></div>
+
+                <!-- 玫瑰装饰框 -->
+                <div class="stage-rose top">🌹</div>
+                <div class="stage-rose left">🌿</div>
+                <div class="stage-rose right">🌿</div>
+                <div class="stage-rose bottom">🌹</div>
+
+                <!-- 搭配评分面板 -->
+                <div class="rating-panel" id="ratingPanel">
+                    <div class="rating-score" id="ratingScore">⭐ 0分</div>
+                    <div class="rating-style" id="ratingStyle">选择造型开始搭配</div>
+                    <div class="rating-tags" id="ratingTags"></div>
+                </div>
+
+                <div class="character-layers" id="characterLayers">
+                    <!-- 基础人物层 -->
+                    <img class="layer base-layer" src="人物底图/base.png" alt="精灵底图">
+
+                    <!-- 发型层 -->
+                    <img class="layer hair-layer hidden" id="hair1" src="发型/hair1.png" alt="发型1">
+                    <img class="layer hair-layer hidden" id="hair2" src="发型/hair2.png" alt="发型2">
+                    <img class="layer hair-layer hidden" id="hair3" src="发型/hair3.png" alt="发型3">
+                    <img class="layer hair-layer hidden" id="hair4" src="发型/hair4.png" alt="发型4">
+                    <img class="layer hair-layer hidden" id="hair5" src="发型/hair5.png" alt="发型5">
+
+                    <!-- 裙子层 -->
+                    <img class="layer dress-layer hidden" id="dress1" src="裙子/dress1.png" alt="裙子1">
+                    <img class="layer dress-layer hidden" id="dress2" src="裙子/dress2.png" alt="裙子2">
+                    <img class="layer dress-layer hidden" id="dress3" src="裙子/dress3.png" alt="裙子3">
+                    <img class="layer dress-layer hidden" id="dress4" src="裙子/dress4.png" alt="裙子4">
+                    <img class="layer dress-layer hidden" id="dress5" src="裙子/dress5.png" alt="裙子5">
+                    <img class="layer dress-layer hidden" id="dress6" src="裙子/dress6.png" alt="裙子6">
+                </div>
+            </div>
+
+            <!-- 右侧：控制面板 -->
+            <div class="controls-panel">
+                <!-- 发型选择 -->
+                <div class="category">
+                    <h3>🌸 发型选择</h3>
+                    <div class="options-grid">
+                        <div class="option-item" onclick="changeHair(1)">
+                            <span class="option-name">发型<br>1</span>
+                        </div>
+                        <div class="option-item" onclick="changeHair(2)">
+                            <span class="option-name">发型<br>2</span>
+                        </div>
+                        <div class="option-item" onclick="changeHair(3)">
+                            <span class="option-name">发型<br>3</span>
+                        </div>
+                        <div class="option-item" onclick="changeHair(4)">
+                            <span class="option-name">发型<br>4</span>
+                        </div>
+                        <div class="option-item" onclick="changeHair(5)">
+                            <span class="option-name">发型<br>5</span>
+                        </div>
+                        <div class="option-item clear-btn" onclick="clearHair()">
+                            <span class="option-name">清空<br>发型</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 裙子选择 -->
+                <div class="category">
+                    <h3>🌿 裙装选择</h3>
+                    <div class="options-grid">
+                        <div class="option-item" onclick="changeDress(1)">
+                            <span class="option-name">裙子<br>1</span>
+                        </div>
+                        <div class="option-item" onclick="changeDress(2)">
+                            <span class="option-name">裙子<br>2</span>
+                        </div>
+                        <div class="option-item" onclick="changeDress(3)">
+                            <span class="option-name">裙子<br>3</span>
+                        </div>
+                        <div class="option-item" onclick="changeDress(4)">
+                            <span class="option-name">裙子<br>4</span>
+                        </div>
+                        <div class="option-item" onclick="changeDress(5)">
+                            <span class="option-name">裙子<br>5</span>
+                        </div>
+                        <div class="option-item" onclick="changeDress(6)">
+                            <span class="option-name">裙子<br>6</span>
+                        </div>
+                        <div class="option-item clear-btn" onclick="clearDress()">
+                            <span class="option-name">清空<br>裙子</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部功能按钮 -->
+        <div class="bottom-actions">
+            <button class="action-btn random" onclick="randomOutfit()">
+                <span>🎲 随机搭配</span>
+            </button>
+            <button class="action-btn capture" onclick="captureOutfit()">
+                <span>📸 保存图片</span>
+            </button>
+            <button class="action-btn reset" onclick="resetOutfit()">
+                <span>🔄 重置全部</span>
+            </button>
+            <button class="action-btn random" onclick="shareOutfit()">
+                <span>🔗 分享造型</span>
+            </button>
+            <button class="action-btn random" id="musicBtn" onclick="toggleMusic()">
+                <span id="musicIcon">🎵 音乐</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 启动界面 -->
+    <div class="start-screen" id="startScreen">
+        <div class="start-logo">
+            <h1>🌹 梦幻精灵 🦋</h1>
+            <p>换装小游戏</p>
+        </div>
+        <button class="start-btn" onclick="startGame()">
+            <span>✨ 开始游戏 ✨</span>
+        </button>
+    </div>
+
+    <!-- 分享弹窗 -->
+    <div class="share-modal" id="shareModal">
+        <div class="share-content">
+            <h2>✨ 分享你的精灵造型 ✨</h2>
+            <div class="share-link-box" id="shareLinkBox">
+                正在生成分享链接...
+            </div>
+            <div class="share-buttons">
+                <button class="share-btn copy" onclick="copyShareLink()">📋 复制链接</button>
+                <button class="share-btn close" onclick="closeShareModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ===================== 状态管理 =====================
+        let currentStyles = {
+            hair: 0,
+            dress: 0
+        };
+
+        let gameStarted = false;
+        let soundEnabled = true;
+        let musicEnabled = false;
+        let audioContext = null;
+        let shareLink = '';
+
+        // ===================== 搭配评分系统数据 =====================
+        const outfitRatings = {
+            hair: {
+                1: { score: 15, style: '优雅' },
+                2: { score: 18, style: '甜美' },
+                3: { score: 16, style: '清新' },
+                4: { score: 20, style: '华丽' },
+                5: { score: 17, style: '灵动' }
+            },
+            dress: {
+                1: { score: 25, style: '华丽' },
+                2: { score: 20, style: '清新' },
+                3: { score: 22, style: '优雅' },
+                4: { score: 21, style: '甜美' },
+                5: { score: 23, style: '梦幻' },
+                6: { score: 28, style: '仙气' }
+            },
+            combos: [
+                { hair: 1, dress: 1, bonus: 15, tags: ['宫廷盛宴', '贵族气质'] },
+                { hair: 1, dress: 3, bonus: 12, tags: ['知性美人', '温婉大方'] },
+                { hair: 2, dress: 2, bonus: 18, tags: ['森林精灵', '自然清新'] },
+                { hair: 2, dress: 4, bonus: 15, tags: ['少女心', '活力满分'] },
+                { hair: 3, dress: 5, bonus: 20, tags: ['梦幻公主', '完美搭配'] },
+                { hair: 3, dress: 6, bonus: 22, tags: ['仙女下凡', '飘逸出尘'] },
+                { hair: 4, dress: 1, bonus: 25, tags: ['绝世佳人', '惊艳全场'] },
+                { hair: 4, dress: 6, bonus: 20, tags: ['月宫仙子', '超凡脱俗'] },
+                { hair: 5, dress: 2, bonus: 16, tags: ['邻家少女', '清纯可爱'] },
+                { hair: 5, dress: 5, bonus: 18, tags: ['灵动俏皮', '青春活力'] }
+            ]
+        };
+
+        // ===================== 本地存储系统 =====================
+        function saveToLocal() {
+            const outfitData = {
+                hair: currentStyles.hair,
+                dress: currentStyles.dress,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('fairyOutfit', JSON.stringify(outfitData));
+        }
+
+        function loadFromLocal() {
+            const saved = localStorage.getItem('fairyOutfit');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    if (data.hair) changeHair(data.hair);
+                    if (data.dress) changeDress(data.dress);
+                    showToast('✨ 已恢复上次的造型');
+                } catch (e) {
+                    console.error('加载失败:', e);
+                }
+            }
+        }
+
+        // ===================== 搭配评分系统 =====================
+        function calculateRating() {
+            const { hair, dress } = currentStyles;
+
+            if (hair === 0 && dress === 0) {
+                document.getElementById('ratingPanel').classList.remove('show');
+                return;
+            }
+
+            let totalScore = 0;
+            let styles = [];
+            let tags = [];
+
+            if (hair > 0 && outfitRatings.hair[hair]) {
+                totalScore += outfitRatings.hair[hair].score;
+                styles.push(outfitRatings.hair[hair].style);
+            }
+
+            if (dress > 0 && outfitRatings.dress[dress]) {
+                totalScore += outfitRatings.dress[dress].score;
+                styles.push(outfitRatings.dress[dress].style);
+            }
+
+            if (hair > 0 && dress > 0) {
+                const combo = outfitRatings.combos.find(c => c.hair === hair && c.dress === dress);
+                if (combo) {
+                    totalScore += combo.bonus;
+                    tags = combo.tags;
+                }
+            }
+
+            displayRating(totalScore, styles, tags);
+        }
+
+        function displayRating(score, styles, tags) {
+            const panel = document.getElementById('ratingPanel');
+            const scoreEl = document.getElementById('ratingScore');
+            const styleEl = document.getElementById('ratingStyle');
+            const tagsEl = document.getElementById('ratingTags');
+
+            const stars = score >= 80 ? '⭐⭐⭐⭐⭐' :
+                         score >= 60 ? '⭐⭐⭐⭐' :
+                         score >= 40 ? '⭐⭐⭐' :
+                         score >= 20 ? '⭐⭐' : '⭐';
+            scoreEl.textContent = `${stars} ${score}分`;
+
+            const styleText = styles.length > 0 ? styles.join(' · ') : '随性自由';
+            styleEl.textContent = styleText;
+
+            tagsEl.innerHTML = '';
+            if (tags.length > 0) {
+                tags.forEach(tag => {
+                    const tagEl = document.createElement('div');
+                    tagEl.className = 'rating-tag';
+                    tagEl.textContent = tag;
+                    tagsEl.appendChild(tagEl);
+                });
+            }
+
+            panel.classList.add('show');
+        }
+
+        // ===================== Toast 提示系统 =====================
+        function showToast(message, duration = 2000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        // ===================== Web Audio API 音效系统 =====================
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playClickSound() {
+            if (!soundEnabled) return;
+            if (!audioContext) initAudio();
+
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.1);
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        function playChangeSound() {
+            if (!soundEnabled) return;
+            if (!audioContext) initAudio();
+
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(659.25, audioContext.currentTime + 0.1);
+            oscillator.frequency.exponentialRampToValueAtTime(783.99, audioContext.currentTime + 0.2);
+
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+
+        function playSuccessSound() {
+            if (!soundEnabled) return;
+            if (!audioContext) initAudio();
+
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+
+            notes.forEach((freq, index) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+
+                    oscillator.frequency.value = freq;
+                    gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.4);
+                }, index * 100);
+            });
+        }
+
+        // ===================== 背景音乐系统（精灵梦幻版）=====================
+        let melodyInterval = null;
+
+        function startBackgroundMusic() {
+            if (!musicEnabled || !audioContext || melodyInterval) return;
+
+            const melody = [
+                { freq: 1046.50, duration: 0.5 },
+                { freq: 1174.66, duration: 0.3 },
+                { freq: 1318.51, duration: 0.4 },
+                { freq: 1567.98, duration: 0.6 },
+                { freq: 1318.51, duration: 0.3 },
+                { freq: 1174.66, duration: 0.5 },
+                { freq: 1046.50, duration: 0.4 },
+                { freq: 880.00, duration: 0.3 },
+                { freq: 1046.50, duration: 0.5 },
+                { freq: 1318.51, duration: 0.7 },
+                { freq: 1567.98, duration: 0.4 },
+                { freq: 1760.00, duration: 0.8 },
+                { freq: 1567.98, duration: 0.4 },
+                { freq: 1318.51, duration: 0.5 },
+                { freq: 1174.66, duration: 0.6 },
+                { freq: 1046.50, duration: 1.0 },
+                { freq: 0, duration: 0.8 }
+            ];
+
+            let index = 0;
+
+            function playNote() {
+                if (!musicEnabled || !audioContext) {
+                    if (melodyInterval) {
+                        clearTimeout(melodyInterval);
+                        melodyInterval = null;
+                    }
+                    return;
+                }
+
+                const note = melody[index];
+
+                if (note.freq > 0) {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+
+                    osc.type = 'sine';
+                    osc.frequency.value = note.freq;
+
+                    gain.gain.setValueAtTime(0, audioContext.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.05, audioContext.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.05, audioContext.currentTime + note.duration - 0.15);
+                    gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + note.duration);
+
+                    osc.start(audioContext.currentTime);
+                    osc.stop(audioContext.currentTime + note.duration);
+
+                    const harmonic = audioContext.createOscillator();
+                    const harmonicGain = audioContext.createGain();
+
+                    harmonic.connect(harmonicGain);
+                    harmonicGain.connect(audioContext.destination);
+
+                    harmonic.type = 'triangle';
+                    harmonic.frequency.value = note.freq / 2;
+
+                    harmonicGain.gain.setValueAtTime(0, audioContext.currentTime);
+                    harmonicGain.gain.linearRampToValueAtTime(0.02, audioContext.currentTime + 0.1);
+                    harmonicGain.gain.setValueAtTime(0.02, audioContext.currentTime + note.duration - 0.15);
+                    harmonicGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + note.duration);
+
+                    harmonic.start(audioContext.currentTime);
+                    harmonic.stop(audioContext.currentTime + note.duration);
+                }
+
+                index = (index + 1) % melody.length;
+                melodyInterval = setTimeout(playNote, note.duration * 1000);
+            }
+
+            playNote();
+        }
+
+        function stopBackgroundMusic() {
+            musicEnabled = false;
+            if (melodyInterval) {
+                clearTimeout(melodyInterval);
+                melodyInterval = null;
+            }
+        }
+
+        function toggleMusic() {
+            musicEnabled = !musicEnabled;
+            const musicIcon = document.getElementById('musicIcon');
+
+            if (musicEnabled) {
+                if (!audioContext) initAudio();
+                startBackgroundMusic();
+                musicIcon.textContent = '🔇 关闭音乐';
+                playClickSound();
+            } else {
+                stopBackgroundMusic();
+                musicIcon.textContent = '🎵 播放音乐';
+                playClickSound();
+            }
+        }
+
+        // ===================== 视觉特效系统 =====================
+        function createPetals() {
+            setInterval(() => {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.style.left = Math.random() * window.innerWidth + 'px';
+                petal.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                petal.style.animationDelay = Math.random() * 2 + 's';
+
+                const colors = ['#FFB6D9', '#FF69B4', '#FFD6E8', '#98FB98'];
+                petal.style.background = `radial-gradient(circle, ${colors[Math.floor(Math.random() * colors.length)]} 0%, transparent 70%)`;
+
+                document.body.appendChild(petal);
+
+                setTimeout(() => petal.remove(), 15000);
+            }, 800);
+        }
+
+        function createStars() {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.textContent = '✨';
+                    star.style.left = Math.random() * window.innerWidth + 'px';
+                    star.style.top = Math.random() * window.innerHeight + 'px';
+                    star.style.animationDelay = Math.random() * 3 + 's';
+                    star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+
+                    document.body.appendChild(star);
+                }, i * 200);
+            }
+        }
+
+        function createParticles(x, y) {
+            const colors = ['#FF69B4', '#FFB6D9', '#98FB98', '#FFD700', '#32CD32'];
+
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+                const angle = (Math.PI * 2 * i) / 12;
+                const velocity = 50 + Math.random() * 50;
+                const tx = Math.cos(angle) * velocity;
+                const ty = Math.sin(angle) * velocity;
+
+                particle.style.setProperty('--tx', tx + 'px');
+                particle.style.setProperty('--ty', ty + 'px');
+
+                document.body.appendChild(particle);
+
+                setTimeout(() => particle.remove(), 800);
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.option-item') || e.target.closest('.action-btn')) {
+                createParticles(e.clientX, e.clientY);
+                playClickSound();
+            }
+        });
+
+        // ===================== 游戏启动 =====================
+        function startGame() {
+            if (gameStarted) return;
+            gameStarted = true;
+
+            const startScreen = document.getElementById('startScreen');
+            const gameContainer = document.querySelector('.game-container');
+
+            if (!audioContext) initAudio();
+            musicEnabled = true;
+            startBackgroundMusic();
+
+            const musicIcon = document.getElementById('musicIcon');
+            musicIcon.textContent = '🔇 关闭音乐';
+
+            startScreen.classList.add('hidden');
+            playSuccessSound();
+
+            createParticles(window.innerWidth / 2, window.innerHeight / 2);
+
+            setTimeout(() => {
+                gameContainer.classList.add('visible');
+            }, 300);
+        }
+
+        // ===================== 核心换装函数 =====================
+        function changeHair(num) {
+            document.querySelectorAll('.hair-layer').forEach(layer => {
+                layer.classList.add('hidden');
+            });
+
+            const selected = document.getElementById(`hair${num}`);
+            if (selected) {
+                selected.classList.remove('hidden');
+                currentStyles.hair = num;
+                updateButtonState(0, num - 1);
+                playChangeSound();
+                calculateRating();
+                saveToLocal();
+            }
+        }
+
+        function clearHair() {
+            document.querySelectorAll('.hair-layer').forEach(layer => {
+                layer.classList.add('hidden');
+            });
+            currentStyles.hair = 0;
+            updateButtonState(0, 5);
+            playClickSound();
+            calculateRating();
+            saveToLocal();
+        }
+
+        function changeDress(num) {
+            document.querySelectorAll('.dress-layer').forEach(layer => {
+                layer.classList.add('hidden');
+            });
+
+            const selected = document.getElementById(`dress${num}`);
+            if (selected) {
+                selected.classList.remove('hidden');
+                currentStyles.dress = num;
+                updateButtonState(1, num - 1);
+                playChangeSound();
+                calculateRating();
+                saveToLocal();
+            }
+        }
+
+        function clearDress() {
+            document.querySelectorAll('.dress-layer').forEach(layer => {
+                layer.classList.add('hidden');
+            });
+            currentStyles.dress = 0;
+            updateButtonState(1, 6);
+            playClickSound();
+            calculateRating();
+            saveToLocal();
+        }
+
+        function updateButtonState(categoryIndex, activeIndex) {
+            const categories = document.querySelectorAll('.category');
+            const buttons = categories[categoryIndex].querySelectorAll('.option-item');
+            buttons.forEach((btn, index) => {
+                btn.classList.toggle('active', index === activeIndex);
+            });
+        }
+
+        function randomOutfit() {
+            const randomHair = Math.floor(Math.random() * 5) + 1;
+            const randomDress = Math.floor(Math.random() * 6) + 1;
+
+            changeHair(randomHair);
+            setTimeout(() => {
+                changeDress(randomDress);
+                playSuccessSound();
+            }, 200);
+        }
+
+        function resetOutfit() {
+            clearHair();
+            clearDress();
+            playClickSound();
+        }
+
+        // ===================== 截图保存功能 =====================
+        function captureOutfit() {
+            playSuccessSound();
+            showToast('📸 正在生成图片...', 1000);
+
+            const ratingPanel = document.getElementById('ratingPanel');
+            const wasVisible = ratingPanel.classList.contains('show');
+            ratingPanel.classList.remove('show');
+
+            const captureArea = document.getElementById('captureArea');
+
+            html2canvas(captureArea, {
+                backgroundColor: null,
+                scale: 2,
+                logging: false,
+                useCORS: true
+            }).then(canvas => {
+                if (wasVisible) {
+                    ratingPanel.classList.add('show');
+                }
+
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+                    link.download = `精灵造型_${timestamp}.png`;
+                    link.href = url;
+                    link.click();
+                    URL.revokeObjectURL(url);
+
+                    showToast('✨ 图片保存成功！');
+                }, 'image/png');
+            }).catch(err => {
+                if (wasVisible) {
+                    ratingPanel.classList.add('show');
+                }
+                console.error('截图失败:', err);
+                showToast('❌ 截图失败，请重试', 2000);
+            });
+        }
+
+        // ===================== 分享功能 =====================
+        function shareOutfit() {
+            playClickSound();
+
+            const { hair, dress } = currentStyles;
+
+            if (hair === 0 && dress === 0) {
+                showToast('⚠️ 请先选择造型再分享', 2000);
+                return;
+            }
+
+            const baseUrl = window.location.href.split('?')[0];
+            shareLink = `${baseUrl}?hair=${hair}&dress=${dress}`;
+
+            document.getElementById('shareLinkBox').textContent = shareLink;
+            document.getElementById('shareModal').classList.add('show');
+        }
+
+        function copyShareLink() {
+            playClickSound();
+
+            navigator.clipboard.writeText(shareLink).then(() => {
+                showToast('✅ 链接已复制到剪贴板！');
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = shareLink;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('✅ 链接已复制到剪贴板！');
+            });
+        }
+
+        function closeShareModal() {
+            playClickSound();
+            document.getElementById('shareModal').classList.remove('show');
+        }
+
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('shareModal');
+            if (e.target === modal) {
+                closeShareModal();
+            }
+        });
+
+        function loadFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const hair = parseInt(urlParams.get('hair'));
+            const dress = parseInt(urlParams.get('dress'));
+
+            if (hair > 0 && hair <= 5) {
+                changeHair(hair);
+            }
+            if (dress > 0 && dress <= 6) {
+                changeDress(dress);
+            }
+
+            if (hair || dress) {
+                showToast('✨ 已加载分享的造型');
+            }
+        }
+
+        // ===================== 初始化 =====================
+        console.log('🌹🦋 梦幻精灵换装游戏已加载');
+        console.log('✨ 点击"开始游戏"按钮进入魔法森林！');
+        console.log('🎵 音乐将在游戏开始时自动播放');
+        console.log('💾 造型会自动保存到本地');
+        console.log('🔗 点击"分享造型"按钮可以生成分享链接');
+
+        window.addEventListener('load', function() {
+            console.log('🎮 游戏准备就绪！');
+
+            setTimeout(() => {
+                createPetals();
+                createStars();
+            }, 1000);
+
+            const musicIcon = document.getElementById('musicIcon');
+            if (!gameStarted) {
+                musicIcon.textContent = '🎵 音乐';
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('hair') || urlParams.has('dress')) {
+                setTimeout(() => {
+                    loadFromUrl();
+                }, 500);
+            } else {
+                setTimeout(() => {
+                    loadFromLocal();
+                }, 500);
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'Space' && !gameStarted) {
+                e.preventDefault();
+                startGame();
+            }
+            if (e.code === 'Escape') {
+                const modal = document.getElementById('shareModal');
+                if (modal.classList.contains('show')) {
+                    closeShareModal();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
