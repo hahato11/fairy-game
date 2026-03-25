@@ -1750,21 +1750,37 @@
             playSuccessSound();
             showToast('📸 正在生成图片...', 1000);
 
+            // 隐藏评分面板和装饰元素
             const ratingPanel = document.getElementById('ratingPanel');
             const wasVisible = ratingPanel.classList.contains('show');
             ratingPanel.classList.remove('show');
 
-            const captureArea = document.getElementById('captureArea');
+            // 临时隐藏背景装饰
+            const magicCircles = document.querySelectorAll('.magic-circle');
+            const stageRoses = document.querySelectorAll('.stage-rose');
+            magicCircles.forEach(el => el.style.display = 'none');
+            stageRoses.forEach(el => el.style.display = 'none');
 
-            html2canvas(captureArea, {
-                backgroundColor: null,
+            // 只截取角色图层容器
+            const characterLayers = document.getElementById('characterLayers');
+
+            html2canvas(characterLayers, {
+                backgroundColor: 'transparent',
                 scale: 2,
                 logging: false,
-                useCORS: true
+                useCORS: true,
+                allowTaint: true,
+                width: 600,
+                height: 650,
+                windowWidth: 600,
+                windowHeight: 650
             }).then(canvas => {
+                // 恢复装饰元素
                 if (wasVisible) {
                     ratingPanel.classList.add('show');
                 }
+                magicCircles.forEach(el => el.style.display = '');
+                stageRoses.forEach(el => el.style.display = '');
 
                 canvas.toBlob(blob => {
                     const url = URL.createObjectURL(blob);
@@ -1778,9 +1794,13 @@
                     showToast('✨ 图片保存成功！');
                 }, 'image/png');
             }).catch(err => {
+                // 恢复装饰元素
                 if (wasVisible) {
                     ratingPanel.classList.add('show');
                 }
+                magicCircles.forEach(el => el.style.display = '');
+                stageRoses.forEach(el => el.style.display = '');
+
                 console.error('截图失败:', err);
                 showToast('❌ 截图失败，请重试', 2000);
             });
